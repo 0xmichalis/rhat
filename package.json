@@ -4,7 +4,7 @@
   "description": "RHAT ERC20 to NFT converter",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx hardhat test"
   },
   "author": "Michalis Kargakis",
   "license": "ISC",

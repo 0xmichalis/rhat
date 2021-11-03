@@ -47,20 +47,11 @@ contract RibbonHat is ERC721, Pausable, AccessControl, ERC721Burnable {
         return rhatTokenURI;
     }
 
-    /// @dev Needed in order to execute the ERC20 token transfer.
-    /// We could also remove this altogether and instruct everyone to 
-    /// increase this contract's allowance directly in the RHAT ERC20
-    /// contract which is probably more gas-efficient.
-    function increaseAllowance(uint256 amount) external {
-        rhatAddress.increaseAllowance(address(this), amount);
-    }
-
     /// @dev mint ensures that only RHAT holders or whitelisted addresses
     /// can mint RHAT NFTs. For ERC20 holders, their token is transferred
     /// to this contract, then the mint is executed.
     /// Note that for RHAT ERC20 holders, first the current contract allowance
-    /// needs to be increased in the RHAT ERC20 contract (or use increaseAllowance
-    /// from this contract).
+    /// needs to be increased in the RHAT ERC20 contract.
     function mint() public onlyRhatHolder() {
         if (!whitelist[msg.sender]) {
             rhatAddress.transferFrom(msg.sender, address(this), 1);
