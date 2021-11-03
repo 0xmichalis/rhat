@@ -2,9 +2,10 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 /// Interface to the RHAT ERC20 contract
 interface IRibbonHatToken {
@@ -13,6 +14,8 @@ interface IRibbonHatToken {
 }
 
 contract RibbonHat is ERC721, Pausable, AccessControl, ERC721Burnable {
+    using Counters for Counters.Counter;
+
     // stock fields
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -20,7 +23,7 @@ contract RibbonHat is ERC721, Pausable, AccessControl, ERC721Burnable {
     mapping(address => bool) public whitelist;
     IRibbonHatToken public rhatAddress;
     string private rhatTokenURI;
-    uint256 private rhatTokenId;
+    Counters.Counter private rhatTokenId;
 
     constructor(address rhatContractAddress, string memory rhatURI, address[] memory whitelistedAddresses) ERC721("RibbonHat", "TTRHAT") {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -59,8 +62,8 @@ contract RibbonHat is ERC721, Pausable, AccessControl, ERC721Burnable {
             whitelist[msg.sender] = false;
         }
         // mint RHAT NFT for the RHAT holder
-        _safeMint(msg.sender, rhatTokenId);
-        rhatTokenId++;
+        _safeMint(msg.sender, rhatTokenId.current());
+        rhatTokenId.increment();
     }
 
     // The following code is used as is and contains no changes
