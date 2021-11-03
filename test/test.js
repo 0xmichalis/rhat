@@ -12,6 +12,7 @@ describe("RibbonHat", function () {
     const RibbonHat = await ethers.getContractFactory("RibbonHat");
     const rhatNft = await RibbonHat.deploy(
       rhatErc20.address,
+      "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       "https://gateway.pinata.cloud/ipfs/QmZsEQHMFadB6kmDKKjPDRab9N7qDZL45AAVam22hCbCRj",
       ["0x70997970C51812dc3A010C7d01b50e0d17dc79C8", "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"],
     );
@@ -22,7 +23,7 @@ describe("RibbonHat", function () {
     const transferTx = await rhatErc20.transferFrom("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0x90F79bf6EB2c4f870365E785982E1f101E93b906", 1);
     await transferTx.wait();
 
-    const [erc20Deployer, whitelisted1, whitelisted2, rhatHolder] = await ethers.getSigners();
+    const [erc20Deployer, whitelisted1, whitelisted2, rhatHolder, randy] = await ethers.getSigners();
     // First, ensure all addresses have no NFT
     expect(await rhatNft.balanceOf(erc20Deployer.address)).to.equal(0);
     expect(await rhatNft.balanceOf(whitelisted1.address)).to.equal(0);
@@ -48,5 +49,14 @@ describe("RibbonHat", function () {
     // Calling mint a second time should not generate a new NFT
     try { await rhatNft.connect(rhatHolder).mint(); } catch {}
     expect(await rhatNft.balanceOf(rhatHolder.address)).to.equal(1);
+
+    // whitelist addition test
+    try { await rhatNft.connect(randy).mint(); } catch {}
+    expect(await rhatNft.balanceOf(randy.address)).to.equal(0);
+    await rhatNft.connect(erc20Deployer).addToWhitelist(randy.address);
+    await rhatNft.connect(randy).mint();
+    expect(await rhatNft.balanceOf(randy.address)).to.equal(1);
+    try { await rhatNft.connect(randy).mint(); } catch {}
+    expect(await rhatNft.balanceOf(randy.address)).to.equal(1);
   });
 });

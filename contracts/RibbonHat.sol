@@ -19,16 +19,24 @@ contract RibbonHat is ERC721, Pausable, AccessControl, ERC721Burnable {
     // stock fields
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+
     // custom fields
     mapping(address => bool) public whitelist;
-    IRibbonHatToken public rhatAddress;
+    IRibbonHatToken public rhatErc20Address;
+    address public rhatMultisigAddress;
     string private rhatTokenURI;
     Counters.Counter private rhatTokenId;
 
-    constructor(address rhatContractAddress, string memory rhatURI, address[] memory whitelistedAddresses) ERC721("RibbonHat", "TTRHAT") {
+    constructor(
+        address erc20Address,
+        address multisigAddress,
+        string memory rhatURI,
+        address[] memory whitelistedAddresses
+    ) ERC721("RibbonHat", "RHAT") {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setupRole(PAUSER_ROLE, msg.sender);
-        rhatAddress = IRibbonHatToken(rhatContractAddress);
+        rhatErc20Address = IRibbonHatToken(erc20Address);
+        rhatMultisigAddress = multisigAddress;
         rhatTokenURI = rhatURI;
         for (uint i = 0; i < whitelistedAddresses.length; i++) {
             whitelist[whitelistedAddresses[i]] = true;
@@ -39,7 +47,12 @@ contract RibbonHat is ERC721, Pausable, AccessControl, ERC721Burnable {
     modifier onlyRhatHolder() {
         // Check whether sender has a RHAT ERC20
         // token or is part of the whitelist
-        require(rhatAddress.balanceOf(msg.sender) > 0 || whitelist[msg.sender], "not a rhat holder");
+        require(rhatErc20Address.balanceOf(msg.sender) > 0 || whitelist[msg.sender], "not a rhat holder");
+        _;
+    }
+
+    modifier onlyMultisig() {
+        require(rhatMultisigAddress == msg.sender, "not the rhat multisig");
         _;
     }
 
@@ -54,9 +67,9 @@ contract RibbonHat is ERC721, Pausable, AccessControl, ERC721Burnable {
     /// to this contract, then the mint is executed.
     /// Note that for RHAT ERC20 holders, first the current contract allowance
     /// needs to be increased in the RHAT ERC20 contract.
-    function mint() public onlyRhatHolder() {
+    function mint() external onlyRhatHolder() {
         if (!whitelist[msg.sender]) {
-            rhatAddress.transferFrom(msg.sender, address(this), 1);
+            rhatErc20Address.transferFrom(msg.sender, address(this), 1);
         } else {
             // Remove from whitelist to ensure only once semantics
             whitelist[msg.sender] = false;
@@ -64,6 +77,10 @@ contract RibbonHat is ERC721, Pausable, AccessControl, ERC721Burnable {
         // mint RHAT NFT for the RHAT holder
         _safeMint(msg.sender, rhatTokenId.current());
         rhatTokenId.increment();
+    }
+
+    function addToWhitelist(address whitelisted) external onlyMultisig() {
+        whitelist[whitelisted] = true;
     }
 
     // The following code is used as is and contains no changes
