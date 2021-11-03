@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: ISC
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -9,7 +9,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 /// Interface to the RHAT ERC20 contract
 interface IRibbonHatToken {
     function balanceOf(address) external view returns (uint256);
-    function increaseAllowance(address, uint256) external;
     function transferFrom(address from, address to, uint256 amount) external;
 }
 

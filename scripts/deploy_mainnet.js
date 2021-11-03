@@ -13,18 +13,11 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
-  // We get the contract to deploy
-  const RibbonHatToken = await hre.ethers.getContractFactory("RibbonHatToken");
-  // Replace with your own beneficiary
-  const rhatErc20 = await RibbonHatToken.deploy("TestRHAT", "TRHAT", 64, "0xBdC85027BCDBe20B3430523a773bf3008888FA9d");
-  await rhatErc20.deployed();
-  console.log("rhatErc20 deployed to:", rhatErc20.address);
-
   const RibbonHat = await hre.ethers.getContractFactory("RibbonHat");
   const rhatNft = await RibbonHat.deploy(
-    rhatErc20.address,
+    "0x4f0fe57066ab1c84569dc6dd2edfe08b92f97f33",
     "https://gateway.pinata.cloud/ipfs/QmZsEQHMFadB6kmDKKjPDRab9N7qDZL45AAVam22hCbCRj",
-    ["0xdb480965AbE4CC4524B325AdB81C051F55efAB4A", "0xDea04E469107E6912b6086F480abAB055948fab0"],
+    ["0x1668c9725e27Bf5943bBD43886E1Fb5AFe75c46C"],
   );
   await rhatNft.deployed();
   console.log("rhatNft deployed to:", rhatNft.address);
