@@ -24,7 +24,7 @@ async function main() {
   const rhatNft = await RibbonHat.deploy(
     rhatErc20.address,
     "https://gateway.pinata.cloud/ipfs/QmZsEQHMFadB6kmDKKjPDRab9N7qDZL45AAVam22hCbCRj",
-    ["0xdb480965AbE4CC4524B325AdB81C051F55efAB4A", "0x1668c9725e27Bf5943bBD43886E1Fb5AFe75c46C"],
+    ["0x1668c9725e27Bf5943bBD43886E1Fb5AFe75c46C", "0x71a15Ac12ee91BF7c83D08506f3a3588143898B5"],
   );
   await rhatNft.deployed();
   console.log("rhatNft deployed to:", rhatNft.address);
