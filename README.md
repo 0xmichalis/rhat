@@ -2,18 +2,27 @@
 
 Converting our ERC20 tokens to NFTs one at a time.
 
-# Etherscan verification
+## Deploy in testnet
 
-To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Ropsten.
-
-In this project, copy the .env.example file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key, your Ropsten node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid .env file in place, first deploy your contract:
+Copy the .env.example file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key,
+your Rinkeby node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction.
+Rinkeby is set up as the testnet network mainly because OpenSea is also deployed in it.
+With a valid .env file in place, first deploy your contract:
 
 ```shell
-hardhat run --network ropsten scripts/deploy.js
+hardhat run --network rinkeby scripts/deploy_rinkeby.js
 ```
 
-Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
+Then, in order to verify the contract on Etherscan, copy the deployment address and paste it in to
+replace `DEPLOYED_CONTRACT_ADDRESS` in this command. Make sure to update the `./scripts/arguments.js`
+file to hold the same parameters used by the deployment script:
 
 ```shell
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
+npx hardhat verify --network rinkeby --constructor-args ./scripts/arguments.js DEPLOYED_CONTRACT_ADDRESS
+```
+
+## Deploy in mainnet
+
+```shell
+hardhat run --network mainnet scripts/deploy_mainnet.js
 ```
