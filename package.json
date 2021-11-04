@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx hardhat compile",
+    "deploy-test": "npx hardhat run --network rinkeby scripts/deploy_rinkeby.js",
     "test": "npx hardhat test"
   },
   "author": "Michalis Kargakis",

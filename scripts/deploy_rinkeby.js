@@ -16,7 +16,7 @@ async function main() {
   // We get the contract to deploy
   const RibbonHatToken = await hre.ethers.getContractFactory("RibbonHatToken");
   // Replace with your own beneficiary
-  const rhatErc20 = await RibbonHatToken.deploy("TestRHAT", "TRHAT", 64, "0xBdC85027BCDBe20B3430523a773bf3008888FA9d");
+  const rhatErc20 = await RibbonHatToken.deploy("TestRHAT", "RHAT", 64, "0xBdC85027BCDBe20B3430523a773bf3008888FA9d");
   await rhatErc20.deployed();
   console.log("rhatErc20 deployed to:", rhatErc20.address);
 

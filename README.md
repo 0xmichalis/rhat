@@ -13,16 +13,21 @@ With a valid .env file in place, first deploy your contract:
 npx hardhat run --network rinkeby scripts/deploy_rinkeby.js
 ```
 
-Then, in order to verify the contract on Etherscan, copy the deployment address and paste it in to
-replace `DEPLOYED_CONTRACT_ADDRESS` in this command. Make sure to update the `./scripts/arguments.js`
-file to hold the same parameters used by the deployment script:
+The above command will deploy a brand new RHAT ERC20 contract and the RHAT NFT contract.
+In order to verify the contracts on Etherscan, copy the deployment addresses and paste
+them below respectively. Make sure to update the `./scripts/arguments.js` file to hold
+the same parameters used by the deployment script for the NFT contract:
 
 ```shell
-npx hardhat verify --network rinkeby --constructor-args ./scripts/arguments.js DEPLOYED_CONTRACT_ADDRESS
+# verify the ERC20 contract
+npx hardhat verify --network rinkeby <ERC20_CONTRACT_ADDRESS> TestRHAT RHAT 64 0xBdC85027BCDBe20B3430523a773bf3008888FA9d
+# verify the NFT contract
+npx hardhat verify --network rinkeby --constructor-args ./scripts/arguments.js <NFT_CONTRACT_ADDRESS>
 ```
 
 ## Deploy in mainnet
 
 ```shell
 npx hardhat run --network mainnet scripts/deploy_mainnet.js
+npx hardhat verify --network mainnet --constructor-args ./scripts/arguments.js <NFT_CONTRACT_ADDRESS>
 ```
