@@ -21,7 +21,6 @@ contract RibbonHat is ERC1155, Ownable {
         address[] memory whitelistedAddresses
     ) ERC1155(rhatURI) {
         rhatErc20Address = IRibbonHatToken(erc20Address);
-        transferOwnership(multisigAddress);
         for (uint i = 0; i < whitelistedAddresses.length; i++) {
             whitelist[whitelistedAddresses[i]] = true;
         }
