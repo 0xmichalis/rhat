@@ -23,7 +23,6 @@ contract RibbonHat is ERC1155, Ownable {
 
     constructor(
         address erc20Address,
-        address multisigAddress,
         string memory rhatURI,
         address[] memory whitelistedAddresses
     ) ERC1155(rhatURI) {
