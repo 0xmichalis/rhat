@@ -1,4 +1,4 @@
-# RHAT ERC20 to ERC721 converter
+# RHAT ERC20 to NFT converter
 
 Converting our ERC20 tokens to NFTs one at a time.
 
