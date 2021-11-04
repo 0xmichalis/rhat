@@ -10,7 +10,7 @@ Rinkeby is set up as the testnet network mainly because OpenSea is also deployed
 With a valid .env file in place, first deploy your contract:
 
 ```shell
-hardhat run --network rinkeby scripts/deploy_rinkeby.js
+npx hardhat run --network rinkeby scripts/deploy_rinkeby.js
 ```
 
 Then, in order to verify the contract on Etherscan, copy the deployment address and paste it in to
@@ -24,5 +24,5 @@ npx hardhat verify --network rinkeby --constructor-args ./scripts/arguments.js D
 ## Deploy in mainnet
 
 ```shell
-hardhat run --network mainnet scripts/deploy_mainnet.js
+npx hardhat run --network mainnet scripts/deploy_mainnet.js
 ```

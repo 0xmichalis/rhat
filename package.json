@@ -4,6 +4,7 @@
   "description": "RHAT ERC20 to NFT converter",
   "main": "index.js",
   "scripts": {
+    "build": "npx hardhat compile",
     "test": "npx hardhat test"
   },
   "author": "Michalis Kargakis",
