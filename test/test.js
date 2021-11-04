@@ -17,13 +17,14 @@ describe("RibbonHat", function () {
     );
     await rhatNft.deployed();
 
+    const [erc20Deployer, whitelisted1, whitelisted2, rhatHolder] = await ethers.getSigners();
+
     // Transfer RHAT ERC20 to an address to test wrapping
     console.log("Setting up RHAT ERC20 holder");
-    await rhatErc20.increaseAllowance("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", 1);
-    const transferTx = await rhatErc20.transferFrom("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0x90F79bf6EB2c4f870365E785982E1f101E93b906", 1);
+    await rhatErc20.increaseAllowance(erc20Deployer.address, 64);
+    const transferTx = await rhatErc20.transferFrom(erc20Deployer.address, rhatHolder.address, 1);
     await transferTx.wait();
 
-    const [erc20Deployer, whitelisted1, whitelisted2, rhatHolder, randy] = await ethers.getSigners();
     // First, ensure all addresses have no NFT
     expect(await rhatNft.balanceOf(erc20Deployer.address, 0)).to.equal(0);
     expect(await rhatNft.balanceOf(whitelisted1.address, 0)).to.equal(0);
@@ -52,14 +53,13 @@ describe("RibbonHat", function () {
     try { await rhatNft.connect(rhatHolder).mint(); } catch {}
     expect(await rhatNft.balanceOf(rhatHolder.address, 0)).to.equal(1);
 
-    // whitelist addition test
-    console.log("Adding to whitelist");
-    try { await rhatNft.connect(randy).mint(); } catch {}
-    expect(await rhatNft.balanceOf(randy.address, 0)).to.equal(0);
-    await rhatNft.connect(erc20Deployer).addToWhitelist(randy.address);
-    await rhatNft.connect(randy).mint();
-    expect(await rhatNft.balanceOf(randy.address, 0)).to.equal(1);
-    try { await rhatNft.connect(randy).mint(); } catch {}
-    expect(await rhatNft.balanceOf(randy.address, 0)).to.equal(1);
+    console.log("Owner can mint");
+    // Burn all existing RHAT ERC20 tokens that the deployer holds so we can
+    // replica the multisig which is going to be the RHAT NFT contract owner
+    // and won't own any ERC20 tokens.
+    const burnTx = await rhatErc20.transferFrom(erc20Deployer.address, "0x0000000000000000000000000000000000000001", 63);
+    await burnTx.wait();
+    await rhatNft.connect(erc20Deployer).mint();
+    expect(await rhatNft.balanceOf(erc20Deployer.address, 0)).to.equal(1);
   });
 });
