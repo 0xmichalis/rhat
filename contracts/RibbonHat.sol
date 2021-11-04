@@ -36,9 +36,9 @@ contract RibbonHat is ERC1155, Ownable {
 
     /// @dev A modifier which checks that the caller is eligible to mint RHAT.
     modifier onlyRhatHolder() {
-        // Check whether sender has a RHAT ERC20
-        // token or is part of the whitelist
-        require(rhatErc20Address.balanceOf(msg.sender) > 0 || whitelist[msg.sender], "not eligible for rhat");
+        // Check whether sender has a RHAT ERC20 token,
+        // is part of the whitelist, or is the contract owner
+        require(rhatErc20Address.balanceOf(msg.sender) > 0 || whitelist[msg.sender] || owner() == msg.sender, "not eligible for rhat");
         _;
     }
 
@@ -52,17 +52,13 @@ contract RibbonHat is ERC1155, Ownable {
     /// Note that for RHAT ERC20 holders, first the current contract allowance
     /// needs to be increased in the RHAT ERC20 contract.
     function mint() external onlyRhatHolder {
-        if (!whitelist[msg.sender]) {
+        if (rhatErc20Address.balanceOf(msg.sender) > 0) {
             rhatErc20Address.transferFrom(msg.sender, address(this), 1);
-        } else {
+        } else if (whitelist[msg.sender]) {
             // Remove from whitelist to ensure only once semantics
             whitelist[msg.sender] = false;
         }
         // mint RHAT NFT for the RHAT holder
         _mint(msg.sender, 0, 1, "");
-    }
-
-    function addToWhitelist(address whitelisted) external onlyOwner {
-        whitelist[whitelisted] = true;
     }
 }
