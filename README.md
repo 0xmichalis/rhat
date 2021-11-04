@@ -1,6 +1,6 @@
-# RHAT ERC20 to NFT converter
+# Ribbon Hat NFT
 
-Converting our ERC20 tokens to NFTs one at a time.
+Converting our ERC20 tokens to NFTs one at a time plus support for onboarding new members.
 
 ## Deploy in testnet
 
