@@ -11,7 +11,14 @@ interface IRibbonHatToken {
 }
 
 contract RibbonHat is ERC1155, Ownable {
+    // Contract name
+    string public name;
+    // Contract symbol
+    string public symbol;
+    // Allow the multisig to onboard new members
+    // plus existing members who lost their ERC20s
     mapping(address => bool) public whitelist;
+    // RHAT ERC20 address
     IRibbonHatToken public rhatErc20Address;
 
     constructor(
@@ -20,6 +27,8 @@ contract RibbonHat is ERC1155, Ownable {
         string memory rhatURI,
         address[] memory whitelistedAddresses
     ) ERC1155(rhatURI) {
+        name = "RibbonHat";
+        symbol = "RHAT";
         rhatErc20Address = IRibbonHatToken(erc20Address);
         for (uint i = 0; i < whitelistedAddresses.length; i++) {
             whitelist[whitelistedAddresses[i]] = true;
