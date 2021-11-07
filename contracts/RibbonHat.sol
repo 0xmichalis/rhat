@@ -19,16 +19,20 @@ contract RibbonHat is ERC1155, Ownable {
     // plus existing members who lost their ERC20s
     mapping(address => bool) public whitelist;
     // RHAT ERC20 address
-    IRibbonHatToken public rhatErc20Address;
+    IRibbonHatToken public erc20Address;
+    // RHAT multisig address
+    address public multisigAddress;
 
     constructor(
-        address erc20Address,
-        string memory rhatURI,
+        address _erc20Address,
+        address _multisigAddress,
+        string memory uri,
         address[] memory whitelistedAddresses
-    ) ERC1155(rhatURI) {
+    ) ERC1155(uri) {
         name = "RibbonHat";
         symbol = "RHAT";
-        rhatErc20Address = IRibbonHatToken(erc20Address);
+        erc20Address = IRibbonHatToken(_erc20Address);
+        multisigAddress = _multisigAddress;
         for (uint i = 0; i < whitelistedAddresses.length; i++) {
             whitelist[whitelistedAddresses[i]] = true;
         }
@@ -38,11 +42,23 @@ contract RibbonHat is ERC1155, Ownable {
     modifier onlyRhatHolder() {
         // Check whether sender has a RHAT ERC20 token,
         // is part of the whitelist, or is the contract owner
-        require(rhatErc20Address.balanceOf(msg.sender) > 0 || whitelist[msg.sender] || owner() == msg.sender, "not eligible for rhat");
+        require(erc20Address.balanceOf(msg.sender) > 0 || whitelist[msg.sender] || multisigAddress == msg.sender, "not eligible for rhat");
         _;
     }
 
-    function setURI(string memory newuri) public onlyOwner {
+    modifier onlyMultisig() {
+        require(multisigAddress == msg.sender, "not the rhat multisig");
+        _;
+    }
+
+    /// @dev Transfers ownership of the contract to a new account (`newOwner`).
+    /// * Can only be called by the current owner.
+    function transferOwnership(address newOwner) public override onlyMultisig {
+        require(newOwner != address(0), "new owner is the zero address");
+        transferOwnership(newOwner);
+    }
+
+    function setURI(string memory newuri) public onlyMultisig {
         _setURI(newuri);
     }
 
@@ -52,8 +68,8 @@ contract RibbonHat is ERC1155, Ownable {
     /// Note that for RHAT ERC20 holders, first the current contract allowance
     /// needs to be increased in the RHAT ERC20 contract.
     function mint() external onlyRhatHolder {
-        if (rhatErc20Address.balanceOf(msg.sender) > 0) {
-            rhatErc20Address.transferFrom(msg.sender, address(this), 1);
+        if (erc20Address.balanceOf(msg.sender) > 0) {
+            erc20Address.transferFrom(msg.sender, address(this), 1);
         } else if (whitelist[msg.sender]) {
             // Remove from whitelist to ensure only once semantics
             whitelist[msg.sender] = false;

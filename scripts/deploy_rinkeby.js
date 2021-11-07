@@ -23,6 +23,7 @@ async function main() {
   const RibbonHat = await hre.ethers.getContractFactory("RibbonHat");
   const rhatNft = await RibbonHat.deploy(
     rhatErc20.address,
+    "0xBdC85027BCDBe20B3430523a773bf3008888FA9d",
     "ipfs://bafkreifis4mzcvhjahpjoyqep3nz5yq6dquic3lkgcubg6za6lsfjb5t4m",
     ["0x1668c9725e27Bf5943bBD43886E1Fb5AFe75c46C", "0x71a15Ac12ee91BF7c83D08506f3a3588143898B5"],
   );
