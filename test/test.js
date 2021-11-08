@@ -12,12 +12,13 @@ describe("RibbonHat", function () {
     const RibbonHat = await ethers.getContractFactory("RibbonHat");
     const rhatNft = await RibbonHat.deploy(
       rhatErc20.address,
+      "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
       "ipfs://bafkreifis4mzcvhjahpjoyqep3nz5yq6dquic3lkgcubg6za6lsfjb5t4m",
       ["0x70997970C51812dc3A010C7d01b50e0d17dc79C8", "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"],
     );
     await rhatNft.deployed();
 
-    const [erc20Deployer, whitelisted1, whitelisted2, rhatHolder] = await ethers.getSigners();
+    const [erc20Deployer, whitelisted1, whitelisted2, rhatHolder, owner] = await ethers.getSigners();
 
     // Transfer RHAT ERC20 to an address to test wrapping
     console.log("Setting up RHAT ERC20 holder");
@@ -54,12 +55,9 @@ describe("RibbonHat", function () {
     expect(await rhatNft.balanceOf(rhatHolder.address, 0)).to.equal(1);
 
     console.log("Owner can mint");
-    // Burn all existing RHAT ERC20 tokens that the deployer holds so we can
-    // replica the multisig which is going to be the RHAT NFT contract owner
-    // and won't own any ERC20 tokens.
-    const burnTx = await rhatErc20.transferFrom(erc20Deployer.address, "0x0000000000000000000000000000000000000001", 63);
-    await burnTx.wait();
-    await rhatNft.connect(erc20Deployer).mint();
-    expect(await rhatNft.balanceOf(erc20Deployer.address, 0)).to.equal(1);
+    expect(await rhatNft.balanceOf(owner.address, 0)).to.equal(0);
+    expect(await rhatErc20.balanceOf(owner.address)).to.equal(0);
+    await rhatNft.connect(owner).mint();
+    expect(await rhatNft.balanceOf(owner.address, 0)).to.equal(1);
   });
 });

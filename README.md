@@ -11,6 +11,8 @@ With a valid .env file in place, first deploy your contract:
 
 ```shell
 npx hardhat run --network rinkeby scripts/deploy_rinkeby.js
+rhatErc20 deployed to: 0x5Fe76F4d2FE5e8931876B02feB5F26F5d0afcf4F
+rhatNft deployed to: 0x3577349618227AEC36512c782E1Fe1aBA154544b
 ```
 
 The above command will deploy a brand new RHAT ERC20 contract and the RHAT NFT contract.
@@ -20,14 +22,14 @@ the same parameters used by the deployment script for the NFT contract:
 
 ```shell
 # verify the ERC20 contract
-npx hardhat verify --network rinkeby <ERC20_CONTRACT_ADDRESS> TestRHAT RHAT 64 0xBdC85027BCDBe20B3430523a773bf3008888FA9d
+npx hardhat verify --network rinkeby 0x5Fe76F4d2FE5e8931876B02feB5F26F5d0afcf4F TestRHAT RHAT 64 0xBdC85027BCDBe20B3430523a773bf3008888FA9d
 # verify the NFT contract
-npx hardhat verify --network rinkeby --constructor-args ./scripts/arguments.js <NFT_CONTRACT_ADDRESS>
+npx hardhat verify --network rinkeby --constructor-args ./scripts/arguments_rinkeby.js 0x3577349618227AEC36512c782E1Fe1aBA154544b
 ```
 
 ## Deploy in mainnet
 
 ```shell
 npx hardhat run --network mainnet scripts/deploy_mainnet.js
-npx hardhat verify --network mainnet --constructor-args ./scripts/arguments.js <NFT_CONTRACT_ADDRESS>
+npx hardhat verify --network mainnet --constructor-args ./scripts/arguments_mainnet.js <NFT_CONTRACT_ADDRESS>
 ```
