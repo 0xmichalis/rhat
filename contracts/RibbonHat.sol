@@ -51,17 +51,6 @@ contract RibbonHat is ERC1155, Ownable {
         _;
     }
 
-    /// @dev Transfers ownership of the contract to a new account (`newOwner`).
-    /// * Can only be called by the current owner.
-    function transferOwnership(address newOwner) public override onlyMultisig {
-        require(newOwner != address(0), "new owner is the zero address");
-        transferOwnership(newOwner);
-    }
-
-    function setURI(string memory newuri) public onlyMultisig {
-        _setURI(newuri);
-    }
-
     /// @dev mint ensures that only RHAT ERC20 holders or whitelisted addresses
     /// can mint RHAT NFTs. For ERC20 holders, their token is transferred
     /// to this contract, then the mint is executed.

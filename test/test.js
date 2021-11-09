@@ -1,4 +1,4 @@
-const { assert, expect } = require("chai");
+const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 describe("RibbonHat", function () {
@@ -54,10 +54,15 @@ describe("RibbonHat", function () {
     try { await rhatNft.connect(rhatHolder).mint(); } catch {}
     expect(await rhatNft.balanceOf(rhatHolder.address, 0)).to.equal(1);
 
-    console.log("Owner can mint");
+    console.log("Real owner can mint");
     expect(await rhatNft.balanceOf(owner.address, 0)).to.equal(0);
     expect(await rhatErc20.balanceOf(owner.address)).to.equal(0);
     await rhatNft.connect(owner).mint();
     expect(await rhatNft.balanceOf(owner.address, 0)).to.equal(1);
+
+    console.log("Contract owner cannot mint");
+    expect(await rhatNft.owner()).to.equal(erc20Deployer.address);
+    try { await rhatNft.connect(erc20Deployer).mint(); } catch {}
+    expect(await rhatNft.balanceOf(erc20Deployer.address, 0)).to.equal(0);
   });
 });
