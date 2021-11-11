@@ -24,6 +24,7 @@ contract RibbonHat is ERC1155, Ownable {
     // no access in this house but kept just to please OpenSea.
     address public governor;
 
+    /// @dev Event emitted when the contract governance is updated.
     event GovernanceTransferred(address indexed previousGovernor, address indexed newGovernor);
 
     constructor(
@@ -49,6 +50,7 @@ contract RibbonHat is ERC1155, Ownable {
         _;
     }
 
+    /// @dev A modifier which checks that the caller is the contract governor.
     modifier onlyGovernor() {
         require(governor == msg.sender, "not the governor");
         _;
@@ -70,6 +72,8 @@ contract RibbonHat is ERC1155, Ownable {
         _mint(msg.sender, 0, 1, "");
     }
 
+    /// @dev Transfer contract governance to newGovernor. Only callable by
+    /// the existing governor.
     function transferGovernance(address newGovernor) external onlyGovernor {
         require(newGovernor != address(0), "new governor is the zero address");
         address oldGovernor = governor;
