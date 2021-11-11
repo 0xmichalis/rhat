@@ -20,19 +20,22 @@ contract RibbonHat is ERC1155, Ownable {
     mapping(address => bool) public whitelist;
     // RHAT ERC20 address
     IRibbonHatToken public erc20Address;
-    // RHAT multisig address
-    address public multisigAddress;
+    // This is the real contract owner, Ownable's owner has
+    // no access in this house but kept just to please OpenSea.
+    address public governor;
+
+    event GovernanceTransferred(address indexed previousGovernor, address indexed newGovernor);
 
     constructor(
         address _erc20Address,
-        address _multisigAddress,
+        address _governor,
         string memory uri,
         address[] memory whitelistedAddresses
     ) ERC1155(uri) {
-        name = "RibbonHat";
+        name = "Ribbon Hat";
         symbol = "RHAT";
         erc20Address = IRibbonHatToken(_erc20Address);
-        multisigAddress = _multisigAddress;
+        governor = _governor;
         for (uint i = 0; i < whitelistedAddresses.length; i++) {
             whitelist[whitelistedAddresses[i]] = true;
         }
@@ -42,12 +45,12 @@ contract RibbonHat is ERC1155, Ownable {
     modifier onlyRhatHolder() {
         // Check whether sender has a RHAT ERC20 token,
         // is part of the whitelist, or is the contract owner
-        require(erc20Address.balanceOf(msg.sender) > 0 || whitelist[msg.sender] || multisigAddress == msg.sender, "not eligible for rhat");
+        require(erc20Address.balanceOf(msg.sender) > 0 || whitelist[msg.sender] || governor == msg.sender, "not eligible for rhat");
         _;
     }
 
-    modifier onlyMultisig() {
-        require(multisigAddress == msg.sender, "not the rhat multisig");
+    modifier onlyGovernor() {
+        require(governor == msg.sender, "not the governor");
         _;
     }
 
@@ -65,5 +68,12 @@ contract RibbonHat is ERC1155, Ownable {
         }
         // mint RHAT NFT for the RHAT holder
         _mint(msg.sender, 0, 1, "");
+    }
+
+    function transferGovernance(address newGovernor) external onlyGovernor {
+        require(newGovernor != address(0), "new governor is the zero address");
+        address oldGovernor = governor;
+        governor = newGovernor;
+        emit GovernanceTransferred(oldGovernor, newGovernor);
     }
 }
