@@ -1,7 +1,7 @@
 {
-  "name": "rhatconverter",
+  "name": "rhat",
   "version": "1.0.0",
-  "description": "RHAT ERC20 to NFT converter",
+  "description": "RHAT NFT contract",
   "main": "index.js",
   "scripts": {
     "build": "npx hardhat compile",
