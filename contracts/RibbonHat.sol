@@ -45,8 +45,8 @@ contract RibbonHat is ERC1155, Ownable {
     /// @dev A modifier which checks that the caller is eligible to mint RHAT.
     modifier onlyRhatHolder() {
         // Check whether sender has a RHAT ERC20 token,
-        // is part of the whitelist, or is the contract owner
-        require(erc20Address.balanceOf(msg.sender) > 0 || whitelist[msg.sender] || governor == msg.sender, "not eligible for rhat");
+        // or is part of the whitelist.
+        require(erc20Address.balanceOf(msg.sender) > 0 || whitelist[msg.sender], "not eligible for rhat");
         _;
     }
 
