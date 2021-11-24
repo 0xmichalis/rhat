@@ -29,6 +29,9 @@ npx hardhat verify --network rinkeby --constructor-args ./scripts/arguments_rink
 ```
 
 [disperse.app](https://disperse.app/) can be used to distribute ERC20 tokens to multiple addresses at once.
+[Etherscan](https://etherscan.io/exportData?type=tokenholders&contract=0x4f0fe57066ab1c84569dc6dd2edfe08b92f97f33&decimal=0)
+allows exporting holder data from existing contracts in CSV format which can easily be copy-pasted
+into Disperse.
 
 ## Deploy in mainnet
 
