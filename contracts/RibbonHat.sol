@@ -15,8 +15,7 @@ contract RibbonHat is ERC1155, Ownable {
     string public name;
     // Contract symbol
     string public symbol;
-    // Allow the multisig to onboard new members
-    // plus existing members who lost their ERC20s
+    // Existing members who lost their ERC20 token.
     mapping(address => bool) public whitelist;
     // RHAT ERC20 address
     IRibbonHatToken public erc20Address;

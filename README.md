@@ -1,13 +1,16 @@
 # Ribbon Hat NFT
 
-Converting our ERC20 tokens to NFTs one at a time plus support for onboarding new members.
+Converting our ERC20 tokens to NFTs one at a time.
 
 ## Deploy in testnet
 
-Copy the .env.example file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key,
-your Rinkeby node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction.
-Rinkeby is set up as the testnet network mainly because OpenSea is also deployed in it.
-With a valid .env file in place, first deploy your contract:
+Copy the `.env.example` file to `.env`, and then edit it to fill in the missing details:
+* an Etherscan API key (needed only to verify the contract)
+* an Ethereum node URL (eg from Alchemy)
+* the private key of the account which will send the deployment transaction
+
+Rinkeby is set up as the testnet network because OpenSea is also deployed in it.
+With a valid `.env` file in place:
 
 ```shell
 npx hardhat run --network rinkeby scripts/deploy_rinkeby.js
@@ -24,6 +27,8 @@ npx hardhat verify --network rinkeby <ERC20_CONTRACT_ADDRESS> TestRHAT RHAT 64 0
 # verify the NFT contract
 npx hardhat verify --network rinkeby --constructor-args ./scripts/arguments_rinkeby.js <NFT_CONTRACT_ADDRESS>
 ```
+
+[disperse.app](https://disperse.app/) can be used to distribute ERC20 tokens to multiple addresses at once.
 
 ## Deploy in mainnet
 
