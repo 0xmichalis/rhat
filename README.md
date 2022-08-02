@@ -2,40 +2,24 @@
 
 Converting our ERC20 tokens to NFTs one at a time.
 
-## Deploy in testnet
+## Build
 
-Copy the `.env.example` file to `.env`, and then edit it to fill in the missing details:
-* an Etherscan API key (needed only to verify the contract)
-* an Ethereum node URL (eg from Alchemy)
-* the private key of the account which will send the deployment transaction
-
-Rinkeby is set up as the testnet network because OpenSea is also deployed in it.
-With a valid `.env` file in place:
-
-```shell
-npx hardhat run --network rinkeby scripts/deploy_rinkeby.js
+```
+forge build
 ```
 
-The above command will deploy a brand new RHAT ERC20 contract and the RHAT NFT contract.
-In order to verify the contracts on Etherscan, copy the deployment addresses and paste
-them below respectively. Make sure to update the `./scripts/arguments.js` file to hold
-the same parameters used by the deployment script for the NFT contract:
+## Test
 
-```shell
-# verify the ERC20 contract
-npx hardhat verify --network rinkeby <ERC20_CONTRACT_ADDRESS> TestRHAT RHAT 64 0xBdC85027BCDBe20B3430523a773bf3008888FA9d
-# verify the NFT contract
-npx hardhat verify --network rinkeby --constructor-args ./scripts/arguments_rinkeby.js <NFT_CONTRACT_ADDRESS>
+```
+forge test
 ```
 
-[disperse.app](https://disperse.app/) can be used to distribute ERC20 tokens to multiple addresses at once.
-[Etherscan](https://etherscan.io/exportData?type=tokenholders&contract=0x4f0fe57066ab1c84569dc6dd2edfe08b92f97f33&decimal=0)
-allows exporting holder data from existing contracts in CSV format which can easily be copy-pasted
-into Disperse.
-
-## Deploy in mainnet
+## Deploy
 
 ```shell
-npx hardhat run --network mainnet scripts/deploy_mainnet.js
-npx hardhat verify --network mainnet --constructor-args ./scripts/arguments_mainnet.js <NFT_CONTRACT_ADDRESS>
+forge create --rpc-url <your_rpc_url> \
+    --constructor-args-path ./script/arguments_testnet.json \
+    --private-key <your_private_key> src/RibbonHat.sol:RibbonHat \
+    --etherscan-api-key <your_etherscan_api_key> \
+    --verify
 ```
